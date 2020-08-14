@@ -10,10 +10,8 @@ import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.sun.istack.NotNull;
-
 @Entity
-@Table(name = "param_sql_server")
+@Table(name = "paramsqlserver")
 public class ParamsSqlServer {
 
 	private static final long serialVersionUID = 1L;
@@ -26,10 +24,11 @@ public class ParamsSqlServer {
 	private String host;
 	private int port;
 
-	@NotNull
+	private String driver;
 	private String username;
-	@NotNull
 	private String password;
+	
+	private String delai;
 
 	private int etat = 1;
 
@@ -45,20 +44,21 @@ public class ParamsSqlServer {
 	}
 
 	// constructeur avec params
-	public ParamsSqlServer(String dbname, String host, int port, String username, String password, int etat,
-			Date dateInsertion, Date dateModification) {
+	public ParamsSqlServer(String dbname, String host, int port, String driver, String username, String password,
+			int etat, Date dateInsertion, Date dateModification, String delai) {
 		super();
 		this.dbname = dbname;
 		this.host = host;
 		this.port = port;
+		this.driver = driver;
 		this.username = username;
 		this.password = password;
 		this.etat = etat;
 		this.dateInsertion = dateInsertion;
 		this.dateModification = dateModification;
+		this.delai = delai;
 	}
 
-	// getters & setters
 	public Long getId() {
 		return id;
 	}
@@ -91,6 +91,14 @@ public class ParamsSqlServer {
 		this.port = port;
 	}
 
+	public String getDriver() {
+		return driver;
+	}
+
+	public void setDriver(String driver) {
+		this.driver = driver;
+	}
+
 	public String getUsername() {
 		return username;
 	}
@@ -105,6 +113,14 @@ public class ParamsSqlServer {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public String getDelai() {
+		return delai;
+	}
+
+	public void setDelai(String delai) {
+		this.delai = delai;
 	}
 
 	public int getEtat() {

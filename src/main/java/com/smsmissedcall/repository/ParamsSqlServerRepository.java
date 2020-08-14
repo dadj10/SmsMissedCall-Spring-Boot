@@ -11,4 +11,8 @@ public interface ParamsSqlServerRepository extends JpaRepository<ParamsSqlServer
 	@Query("SELECT c FROM ParamsSqlServer c WHERE c.etat=1")
 	ParamsSqlServer findParamSqlServer();
 
+	// Cette requête retourne un ParamsSqlServer par son codes
+	@Query("SELECT c FROM ParamsSqlServer c WHERE c.id=?1 AND c.etat=1")
+	ParamsSqlServer findSqlServerById(Long id);
+
 }

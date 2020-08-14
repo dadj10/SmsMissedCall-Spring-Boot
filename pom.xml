@@ -116,6 +116,20 @@
 			<version>7.0.0.jre8</version>
 		</dependency>
 
+		<!-- Permettra de faire des requètes http -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.10</version>
+		</dependency>
+		
+		<!-- Permettra de convertir des objets en gson -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
