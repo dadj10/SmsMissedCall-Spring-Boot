@@ -157,13 +157,13 @@ public class ReadSmsMissedCall {
 
 						if (callMissed == null) {
 
-							// Je recherche le dernier appel recu par le destinataire.
-							boolean ecart = findGapLastTicket(code_ticket, poste, destinataire, date_heure_alerte,
+							// 11. Je recherche le dernier appel recu par le destinataire.
+							boolean repEcart = findGapLastTicket(code_ticket, poste, destinataire, date_heure_alerte,
 									delai);
 							// ecart > delai
-							if (ecart) {
+							if (repEcart) {
 
-								// 11. J'enregistre le call missed
+								// 12. J'enregistre le call missed
 								CallMissed call = new CallMissed();
 
 								call.setNom(nom);
@@ -188,7 +188,7 @@ public class ReadSmsMissedCall {
 
 								call = callMissedRepos.save(call);
 
-								// 12. Si l'object call n'est pas null alors,
+								// 13. Si l'object call n'est pas null alors,
 								if (call != null) {
 									// 13. Je mets a jour le CallMissed existant de Sql Server
 									int statusTraite = 1;
@@ -216,27 +216,35 @@ public class ReadSmsMissedCall {
 		}
 	}
 
+	/**
+	 * Cette fonction permet determiner l'ecart entre deux appels
+	 * 
+	 * @param String
+	 * @param String
+	 * 
+	 * @return boolean
+	 */
 	public boolean findGapLastTicket(String code_ticket, String poste, String destinataire, String date_heure_alerte,
 			int delai) {
 
 		boolean reponse = false;
 
-		// Je recherche le dernier ticket enregistré le poste et le destinataire
+		// 1. Je recherche le dernier ticket enregistré le poste et le destinataire.
 		CallMissed call = null;
 		call = callMissedRepos.findLastCall(poste, destinataire);
 
-		// S'il existe un ticket du meme poste et du meme destinataire alors..
+		// 2. S'il existe un ticket du meme poste et du meme destinataire alors...
 		if (call != null) {
 
-			// Je compare les dates d'alerte
+			// 3. Je compare les dates d'alerte
 			Date date1 = Utils.stringToDate(call.getDate_heure_alerte()); // date de l'ancien ticket
 			Date date2 = Utils.stringToDate(date_heure_alerte); // date du nouveau ticket
 
-			// Je calcule le nombre de minutes entre des deux dates.
+			// 4. Je calcule le nombre de minutes entre des deux dates.
 			Long diff = date2.getTime() - date1.getTime();
-			int ecart = (int) (diff / (60 * 1000)); // en minutes
+			int ecart = (int) (diff / (60 * 1000)); // en minutes.
 
-			// Si le delai est superieur a la difference alors j'enregistre le ticket
+			// 5. Si le delai est superieur a la difference alors j'enregistre le ticket.
 			if (ecart > delai) {
 				reponse = true;
 			} else { // si non je n'enregistre pas
