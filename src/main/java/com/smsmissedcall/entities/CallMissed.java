@@ -33,14 +33,12 @@ public class CallMissed {
 	private String duree;
 	private int traite;
 	private String profil;
-	
+
 	private String date_heure_alerte;
 
 	private String poste;
 
 	private String standard;
-
-	private String dateheuralerte;
 
 	private int etat = 1;
 
@@ -58,8 +56,8 @@ public class CallMissed {
 	// constructeur avec params
 	public CallMissed(String nom, String code_entreprise, String ligne_direct, String code_ticket,
 			String date_heure_decroche, String destinataire, String duree, int traite, String profil,
-			String date_heure_alerte, String poste, String standard, String dateheuralerte, int etat,
-			Date dateInsertion, Date dateModification) {
+			String date_heure_alerte, String poste, String standard, int etat, Date dateInsertion,
+			Date dateModification) {
 		super();
 		this.nom = nom;
 		this.code_entreprise = code_entreprise;
@@ -73,7 +71,6 @@ public class CallMissed {
 		this.date_heure_alerte = date_heure_alerte;
 		this.poste = poste;
 		this.standard = standard;
-		this.dateheuralerte = dateheuralerte;
 		this.etat = etat;
 		this.dateInsertion = dateInsertion;
 		this.dateModification = dateModification;
@@ -182,14 +179,6 @@ public class CallMissed {
 
 	public void setStandard(String standard) {
 		this.standard = standard;
-	}
-
-	public String getDateheuralerte() {
-		return dateheuralerte;
-	}
-
-	public void setDateheuralerte(String dateheuralerte) {
-		this.dateheuralerte = dateheuralerte;
 	}
 
 	public int getEtat() {

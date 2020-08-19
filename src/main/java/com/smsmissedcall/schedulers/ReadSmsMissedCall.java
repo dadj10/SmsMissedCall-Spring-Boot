@@ -96,6 +96,7 @@ public class ReadSmsMissedCall {
 
 			username = params.getUsername();
 			password = params.getPassword();
+			int delai = Integer.parseInt(params.getDelai());
 
 			try {
 				// 4. Je Charge le driver de la connexion JDBC
@@ -109,7 +110,6 @@ public class ReadSmsMissedCall {
 				statement = con.createStatement();
 
 				// 7. Je prépara la requète et puis je l'exécute
-				// String selectQuery = "SELECT * FROM CallMissed WHERE traite = 'False'";
 				String selectQuery = "SELECT dbo.CONTACTS.nom AS nom, dbo.CONTACTS.CODE_ENTREPRISE AS code_entreprise, dbo.CONTACTS.linedirect AS ligne_direct, dbo.CallMissed.codes AS code_ticket, dbo.CallMissed.Dateheuredecroche AS date_heure_decroche, dbo.CallMissed.dest1 AS destinataire, dbo.CallMissed.duree AS duree, dbo.CallMissed.traite AS traite, dbo.CallMissed.profil AS profil, dbo.CallMissed.dateheuralerte AS date_heure_alerte, dbo.CONTACTS.poste AS poste, dbo.CONTACTS.standart AS standard FROM dbo.CONTACTS INNER JOIN dbo.CallMissed ON (dbo.CONTACTS.poste = dbo.CallMissed.Postes) WHERE dbo.CallMissed.traite = 0";
 
 				resultSet = statement.executeQuery(selectQuery);
@@ -129,7 +129,7 @@ public class ReadSmsMissedCall {
 						code_ticket = resultSet.getString("code_ticket");
 
 						date_heure_decroche = resultSet.getString("date_heure_decroche");
-						destinataire = resultSet.getString("destinataire");
+						destinataire = FormatNumero.number_F(resultSet.getString("destinataire"));
 						duree = resultSet.getString("duree");
 						// int traite = resultSet.getByte("traite");
 
@@ -157,48 +157,47 @@ public class ReadSmsMissedCall {
 
 						if (callMissed == null) {
 
-							// 11. Je vérifie que le ticket de ce poste a un ecart de 10 min du précédent
+							// Je recherche le dernier appel recu par le destinataire.
+							boolean ecart = findGapLastTicket(code_ticket, poste, destinataire, date_heure_alerte,
+									delai);
+							// ecart > delai
+							if (ecart) {
 
-							// 11. J'enregistre le call missed
-							CallMissed call = new CallMissed();
+								// 11. J'enregistre le call missed
+								CallMissed call = new CallMissed();
 
-							call.setNom(nom);
-							call.setCode_entreprise(code_entreprise);
-							call.setLigne_direct(ligne_direct);
-							call.setCode_ticket(code_ticket);
-							call.setDate_heure_decroche(date_heure_decroche);
-							call.setDestinataire(FormatNumero.number_F(destinataire));
-							call.setDuree(duree);
+								call.setNom(nom);
+								call.setCode_entreprise(code_entreprise);
+								call.setLigne_direct(ligne_direct);
+								call.setCode_ticket(code_ticket);
+								call.setDate_heure_decroche(date_heure_decroche);
+								call.setDestinataire(destinataire);
+								call.setDuree(duree);
 
-							call.setTraite(1);
+								call.setTraite(1);
 
-							call.setProfil(profil);
-							call.setDate_heure_alerte(date_heure_alerte);
-							call.setPoste(poste);
-							call.setStandard(standard);
+								call.setProfil(profil);
+								call.setDate_heure_alerte(date_heure_alerte);
+								call.setPoste(poste);
+								call.setStandard(standard);
 
-							call.setEtat(0);
+								call.setEtat(0);
 
-							call.setDateInsertion(new Date());
-							call.setDateModification(new Date());
+								call.setDateInsertion(new Date());
+								call.setDateModification(new Date());
 
-							call = callMissedRepos.save(call);
+								call = callMissedRepos.save(call);
 
-							// 12. Je mets a jour le CallMissed existant de Sql Server
-							if (call != null) {
-								// 13. Je prépare la requète de mise a jour
-								String updateQuery = "UPDATE CallMissed SET traite=? WHERE codes=?";
-
-								preparedStatement = con.prepareStatement(updateQuery);
-								preparedStatement.setInt(1, 1);
-								preparedStatement.setString(2, code_ticket);
-
-								// 14. J'exécute la requète de mise a jour
-								int rowsUpdated = preparedStatement.executeUpdate();
-								if (rowsUpdated > 0) {
-									System.err.println(Utils.dateNow() + " Un CallMissed codes " + code_ticket
-											+ " existant a été mis à jour avec succès !");
+								// 12. Si l'object call n'est pas null alors,
+								if (call != null) {
+									// 13. Je mets a jour le CallMissed existant de Sql Server
+									int statusTraite = 1;
+									updatedTicket(con, statusTraite, code_ticket);
 								}
+							} else {
+								// Je met a jour le ticket
+								int statusTraite = -1;
+								updatedTicket(con, statusTraite, code_ticket);
 							}
 						} else {
 							System.err.println(Utils.dateNow() + " CallMissed déja enregistré");
@@ -215,6 +214,76 @@ public class ReadSmsMissedCall {
 		} else {
 			System.err.println(Utils.dateNow() + " Aucun paramètre de server sql trouvé");
 		}
+	}
+
+	public boolean findGapLastTicket(String code_ticket, String poste, String destinataire, String date_heure_alerte,
+			int delai) {
+
+		boolean reponse = false;
+
+		// Je recherche le dernier ticket enregistré le poste et le destinataire
+		CallMissed call = null;
+		call = callMissedRepos.findLastCall(poste, destinataire);
+
+		// S'il existe un ticket du meme poste et du meme destinataire alors..
+		if (call != null) {
+
+			// Je compare les dates d'alerte
+			Date date1 = Utils.stringToDate(call.getDate_heure_alerte()); // date de l'ancien ticket
+			Date date2 = Utils.stringToDate(date_heure_alerte); // date du nouveau ticket
+
+			// Je calcule le nombre de minutes entre des deux dates.
+			Long diff = date2.getTime() - date1.getTime();
+			int ecart = (int) (diff / (60 * 1000)); // en minutes
+
+			// Si le delai est superieur a la difference alors j'enregistre le ticket
+			if (ecart > delai) {
+				reponse = true;
+			} else { // si non je n'enregistre pas
+				reponse = false;
+				System.err.println(Utils.dateNow() + " Un ticket d'appel vers ce destinataire a déja été enregistré");
+			}
+		} else {
+			reponse = true;
+			System.err.println(Utils.dateNow() + " Il n'existe pas un ticket du meme poste et du meme destinataire");
+		}
+
+		return reponse;
+	}
+
+	/**
+	 * Cette fonction permet de mettre à jour (Etat à 1) les tickets de la table
+	 * CallMissed de la base donnes smsmissedcall de Sql Server
+	 * 
+	 * @param Connection
+	 * @param String
+	 * 
+	 * @return boolean
+	 */
+	public boolean updatedTicket(Connection con, int statusTraite, String code_ticket) {
+
+		boolean reponse = false;
+
+		try {
+			// 1. Je prépare la requète de mise a jour
+			String updateQuery = "UPDATE CallMissed SET traite=? WHERE codes=?";
+
+			preparedStatement = con.prepareStatement(updateQuery);
+			preparedStatement.setInt(1, statusTraite);
+			preparedStatement.setString(2, code_ticket);
+
+			// 2. J'exécute la requète de mise a jour
+			int rowsUpdated = preparedStatement.executeUpdate();
+			if (rowsUpdated > 0) {
+				reponse = true;
+				System.err.println(Utils.dateNow() + " Un CallMissed codes " + code_ticket
+						+ " existant a été mis à jour avec succès !");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return reponse;
 	}
 
 	// Cette fonction permet de fermer toutes les instances
@@ -243,7 +312,7 @@ public class ReadSmsMissedCall {
 	 * 
 	 * @return void
 	 */
-	@Scheduled(fixedDelay = 10000)
+	// @Scheduled(fixedDelay = 10000)
 	public void sendBulkSms() {
 
 		System.err.println(Utils.dateNow() + " Run sendBulkSms");
@@ -395,7 +464,7 @@ public class ReadSmsMissedCall {
 			modele = modele.replace("[ENTREPRISE]", call.getCode_entreprise());
 			sms = modele.replace("[LIGNEDIRECTE]", call.getLigne_direct());
 
-			System.err.println(Utils.dateNow() + " ticket "+ call.getCode_ticket() +" profil: " + profil);
+			System.err.println(Utils.dateNow() + " ticket " + call.getCode_ticket() + " profil: " + profil);
 		} else if (profil == "incoming") {
 
 		}
