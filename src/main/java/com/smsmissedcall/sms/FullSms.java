@@ -1,4 +1,4 @@
-package com.smsmissedcall.entities;
+package com.smsmissedcall.sms;
 
 import java.util.ArrayList;
 

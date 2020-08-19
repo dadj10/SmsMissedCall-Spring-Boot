@@ -1,4 +1,4 @@
-package com.smsmissedcall.entities;
+package com.smsmissedcall.sms;
 
 public class Message {
 

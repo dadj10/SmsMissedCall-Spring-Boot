@@ -22,9 +22,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
-import com.smsmissedcall.entities.BulkSms;
 import com.smsmissedcall.entities.CallMissed;
-import com.smsmissedcall.entities.Message;
 import com.smsmissedcall.entities.ModeleSms;
 import com.smsmissedcall.entities.ParamApi;
 import com.smsmissedcall.entities.ParamsSqlServer;
@@ -32,6 +30,8 @@ import com.smsmissedcall.repository.CallMissedRepository;
 import com.smsmissedcall.repository.ModeleSmsRepository;
 import com.smsmissedcall.repository.ParamApiRepository;
 import com.smsmissedcall.repository.ParamsSqlServerRepository;
+import com.smsmissedcall.sms.BulkSms;
+import com.smsmissedcall.sms.Message;
 
 @Component
 public class ReadSmsMissedCall {
@@ -320,7 +320,7 @@ public class ReadSmsMissedCall {
 	 * 
 	 * @return void
 	 */
-	// @Scheduled(fixedDelay = 10000)
+	@Scheduled(fixedDelay = 10000)
 	public void sendBulkSms() {
 
 		System.err.println(Utils.dateNow() + " Run sendBulkSms");
