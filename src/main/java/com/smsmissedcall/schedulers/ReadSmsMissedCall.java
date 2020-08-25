@@ -89,7 +89,11 @@ public class ReadSmsMissedCall {
 			port = params.getPort();
 
 			// 3. Je formate l'URL de la connexion JDBC
-			String url = "jdbc:sqlserver://" + host + "\\SQLEXPRESS:" + port + ";databaseName=" + dbname + "";
+			// String url = "jdbc:sqlserver://10.10.130.67:1433;databaseName=smsmissedcall;integratedSecurity=true";
+			// String url = "jdbc:sqlserver://" + host + "\\SQLEXPRESS:" + port + ";databaseName=" + dbname + "";
+			
+			// String url = "jdbc:sqlserver://10.10.130.67\\GSESMSW2R:1433;databaseName=smsmissedcall";
+			String url ="jdbc:sqlserver://10.10.130.67\\GSESMSW2R;databaseName=smsmissedcall;integratedSecurity=true";
 
 			// driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 			driver = params.getDriver();
