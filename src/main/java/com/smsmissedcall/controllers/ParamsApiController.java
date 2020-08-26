@@ -21,7 +21,7 @@ import com.smsmissedcall.repository.ParamsSqlServerRepository;
 @Controller
 @CrossOrigin("*")
 @RequestMapping(value = "api")
-public class paramsApiController {
+public class ParamsApiController {
 
 	@Autowired
 	private ParamApiRepository paramApiRepos;

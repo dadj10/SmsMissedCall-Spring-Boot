@@ -1,4 +1,4 @@
-package com.smsmissedcall.methods;
+package com.smsmissedcall.utils;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;

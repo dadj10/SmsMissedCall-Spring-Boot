@@ -25,9 +25,11 @@ public class ParamsSqlServer {
 	private int port;
 
 	private String driver;
+	private String instance;
 	private String username;
 	private String password;
-	
+	private String url;
+
 	private String delai;
 
 	private int etat = 1;
@@ -38,25 +40,27 @@ public class ParamsSqlServer {
 	private Date dateModification;
 
 	// constructeur sans params
+	// constructeur avec params
 	public ParamsSqlServer() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	// constructeur avec params
-	public ParamsSqlServer(String dbname, String host, int port, String driver, String username, String password,
-			int etat, Date dateInsertion, Date dateModification, String delai) {
+	public ParamsSqlServer(String dbname, String host, int port, String driver, String instance, String username,
+			String password, String url, String delai, int etat, Date dateInsertion, Date dateModification) {
 		super();
 		this.dbname = dbname;
 		this.host = host;
 		this.port = port;
 		this.driver = driver;
+		this.instance = instance;
 		this.username = username;
 		this.password = password;
+		this.url = url;
+		this.delai = delai;
 		this.etat = etat;
 		this.dateInsertion = dateInsertion;
 		this.dateModification = dateModification;
-		this.delai = delai;
 	}
 
 	public Long getId() {
@@ -99,6 +103,14 @@ public class ParamsSqlServer {
 		this.driver = driver;
 	}
 
+	public String getInstance() {
+		return instance;
+	}
+
+	public void setInstance(String instance) {
+		this.instance = instance;
+	}
+
 	public String getUsername() {
 		return username;
 	}
@@ -114,7 +126,15 @@ public class ParamsSqlServer {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
 	public String getDelai() {
 		return delai;
 	}

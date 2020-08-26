@@ -19,7 +19,7 @@ import com.smsmissedcall.repository.ParamsSqlServerRepository;
 @Controller
 @CrossOrigin("*")
 @RequestMapping(value = "sql-server")
-public class paramsSqlServerController {
+public class ParamsSqlServerController {
 
 	@Autowired
 	private ParamsSqlServerRepository paramsSqlServerRepos;

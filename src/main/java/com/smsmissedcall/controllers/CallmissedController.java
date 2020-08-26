@@ -14,7 +14,7 @@ import com.smsmissedcall.repository.CallMissedRepository;
 @Controller
 @CrossOrigin("*")
 @RequestMapping(value = "/")
-public class callmissedController {
+public class CallmissedController {
 	
 	@Autowired
 	private CallMissedRepository callMissedRepos;

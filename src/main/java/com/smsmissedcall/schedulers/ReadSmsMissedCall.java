@@ -1,7 +1,5 @@
 package com.smsmissedcall.schedulers;
 
-import com.smsmissedcall.methods.FormatNumero;
-import com.smsmissedcall.methods.Utils;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -32,6 +30,8 @@ import com.smsmissedcall.repository.ParamApiRepository;
 import com.smsmissedcall.repository.ParamsSqlServerRepository;
 import com.smsmissedcall.sms.BulkSms;
 import com.smsmissedcall.sms.Message;
+import com.smsmissedcall.utils.FormatNumero;
+import com.smsmissedcall.utils.Utils;
 
 @Component
 public class ReadSmsMissedCall {
@@ -69,31 +69,30 @@ public class ReadSmsMissedCall {
 		System.err.println(Utils.dateNow() + " Run ReadSqlServerJDBC");
 
 		// 1. J'initialise les params de connexion au SGBD
-		String dbname = null;
-		String host = null;
-		int port;
-		String driver = null;
-
-		String username = null;
-		String password = null;
+		String host, instance, dbname, url, driver, username, password = null;
 
 		// 2. Je récupère les parametres du SGBD
 		ParamsSqlServer params = null;
 		params = paramsSqlServerRepos.findParamSqlServer();
-		System.err.println(params);
 
 		if (params != null) {
 
-			dbname = params.getDbname();
 			host = params.getHost();
-			port = params.getPort();
+			instance = params.getInstance();
+			int port = params.getPort();
+			dbname = params.getDbname();
+
+			url = params.getUrl();
 
 			// 3. Je formate l'URL de la connexion JDBC
-			// String url = "jdbc:sqlserver://10.10.130.67:1433;databaseName=smsmissedcall;integratedSecurity=true";
-			// String url = "jdbc:sqlserver://" + host + "\\SQLEXPRESS:" + port + ";databaseName=" + dbname + "";
-			
-			// String url = "jdbc:sqlserver://10.10.130.67\\GSESMSW2R:1433;databaseName=smsmissedcall";
-			String url ="jdbc:sqlserver://10.10.130.67\\GSESMSW2R;databaseName=smsmissedcall;integratedSecurity=true";
+			// String url =
+			// "jdbc:sqlserver://10.10.130.67\\MSSQLSERVER:1433;databaseName=smsmissedcall";
+			// String url =
+			// "jdbc:sqlserver://[HOST]\\[INSTANCE]:[PORT];databaseName=[DBNAME]";
+			url = url.replace("[HOST]", host);
+			url = url.replace("[INSTANCE]", instance);
+			url = url.replace("[PORT]", String.valueOf(port));
+			url = url.replace("[DBNAME]", dbname);
 
 			// driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 			driver = params.getDriver();
@@ -162,8 +161,8 @@ public class ReadSmsMissedCall {
 						if (callMissed == null) {
 
 							// 11. Je recherche le dernier appel recu par le destinataire.
-							boolean repEcart = findGapLastTicket(code_ticket, poste, destinataire, date_heure_alerte,
-									delai);
+							boolean repEcart = findEcartDernierTicket(code_ticket, poste, destinataire,
+									date_heure_alerte, delai);
 							// ecart > delai
 							if (repEcart) {
 
@@ -228,8 +227,8 @@ public class ReadSmsMissedCall {
 	 * 
 	 * @return boolean
 	 */
-	public boolean findGapLastTicket(String code_ticket, String poste, String destinataire, String date_heure_alerte,
-			int delai) {
+	public boolean findEcartDernierTicket(String code_ticket, String poste, String destinataire,
+			String date_heure_alerte, int delai) {
 
 		boolean reponse = false;
 
@@ -338,6 +337,8 @@ public class ReadSmsMissedCall {
 
 		if (api != null) {
 
+			String username, token, sender, flash, title = null;
+
 			// String username = "justine";
 			// String token =
 			// "$2a$10$bbqS7kicnAPCFkjbCSPN1OGOhMxavdsMOnRPir7Q39vQeu4msF5y6";
@@ -346,11 +347,11 @@ public class ReadSmsMissedCall {
 			// String title = TESTER;
 
 			// 2. Je récupère les paramètres de l'api.
-			String username = api.getUsername();
-			String token = api.getToken();
-			String sender = api.getSender();
-			String flash = api.getFlash();
-			String title = api.getTitle();
+			username = api.getUsername();
+			token = api.getToken();
+			sender = api.getSender();
+			flash = api.getFlash();
+			title = api.getTitle();
 
 			// String url = "http://10.10.130.76:8080/api";
 			String url = api.getUrl();
