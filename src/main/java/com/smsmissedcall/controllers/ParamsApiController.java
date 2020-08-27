@@ -8,18 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.smsmissedcall.entities.ParamApi;
-import com.smsmissedcall.entities.ParamsSqlServer;
 import com.smsmissedcall.repository.ParamApiRepository;
-import com.smsmissedcall.repository.ParamsSqlServerRepository;
 
 @Controller
-@CrossOrigin("*")
 @RequestMapping(value = "api")
 public class ParamsApiController {
 
@@ -28,8 +24,9 @@ public class ParamsApiController {
 
 	@GetMapping()
 	public String page(Model model, HttpSession session) {
+		ParamApi api = paramApiRepos.findOneParamApi();
 		// je recherche les tickets par ordre decroissant
-		model.addAttribute("Api", paramApiRepos.findOneParamApi());
+		model.addAttribute("Api", api);
 		return "api/index";
 	}
 
@@ -70,10 +67,8 @@ public class ParamsApiController {
 			if (bindingResult.hasErrors()) {
 				return "api/update";
 			}
-
 			api = findOne(a.getId());
 			if (api != null) {
-
 				a.setMethod_one(api.getMethod_one());
 				a.setMethod_full(api.getMethod_full());
 				a.setMethod_bulk(api.getMethod_bulk());

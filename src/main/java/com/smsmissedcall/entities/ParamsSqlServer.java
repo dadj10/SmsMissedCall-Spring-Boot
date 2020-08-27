@@ -33,9 +33,7 @@ public class ParamsSqlServer {
 	private String delai;
 
 	private int etat = 1;
-
-	@DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-	private Date dateInsertion;
+	
 	@DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
 	private Date dateModification;
 
@@ -59,7 +57,6 @@ public class ParamsSqlServer {
 		this.url = url;
 		this.delai = delai;
 		this.etat = etat;
-		this.dateInsertion = dateInsertion;
 		this.dateModification = dateModification;
 	}
 
@@ -149,14 +146,6 @@ public class ParamsSqlServer {
 
 	public void setEtat(int etat) {
 		this.etat = etat;
-	}
-
-	public Date getDateInsertion() {
-		return dateInsertion;
-	}
-
-	public void setDateInsertion(Date dateInsertion) {
-		this.dateInsertion = dateInsertion;
 	}
 
 	public Date getDateModification() {

@@ -28,7 +28,7 @@
 					<div class="container-fluid">
 						<div class="row mb-2">
 							<div class="col-sm-6">
-								<h1 class="m-0 text-dark">Param&egrave;tre Api</h1>
+								<h1 class="m-0 text-dark">Param&egrave;tres Api</h1>
 							</div>
 							<!-- /.col -->
 							<div class="col-sm-6">
@@ -84,8 +84,9 @@
 												<td th:text="${e.Method_one}"></td>
 												<td th:text="${e.Method_full}"></td>
 												<td th:text="${e.Method_bulk}"></td>
+												
 												<td th:text="${e.Flash}"></td>
-												<td th:text="${e.Titre}"></td>
+												<td th:text="${e.Title}"></td>
 												<td class="text-nowrap" th:text="${e.dateModification}"></td>
 												<td class="text-nowrap"><a
 													th:href="@{/api/formupdate(id=${e.id})}"

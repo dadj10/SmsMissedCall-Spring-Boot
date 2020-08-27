@@ -28,14 +28,14 @@
 					<div class="container-fluid">
 						<div class="row mb-2">
 							<div class="col-sm-6">
-								<h1 class="m-0 text-dark">Moyens de paiement</h1>
+								<h1 class="m-0 text-dark">Param&egrave;tre SQL Server</h1>
 							</div>
 							<!-- /.col -->
 							<div class="col-sm-6">
 								<ol class="breadcrumb float-sm-right">
 									<li class="breadcrumb-item"><a href="#">Accueil</a></li>
 									<li class="breadcrumb-item"><a href="#">Param&egrave;tres</a></li>
-									<li class="breadcrumb-item active">Moyens de paiement</li>
+									<li class="breadcrumb-item active">Param&egrave;tre SQL Server</li>
 								</ol>
 							</div>
 							<!-- /.col -->
@@ -91,14 +91,24 @@
 																	placeholder="Port" /> <span class="text-danger"
 																	th:errors="*{port}"></span>
 															</div>
+															
+															<!-- instance -->
+															<div class="form-group">
+																<label for="instance">Instance</label> <input type="text"
+																	th:field="*{instance}" class="form-control" id="instance"
+																	placeholder="Instance" /> <span class="text-danger"
+																	th:errors="*{instance}"></span>
+															</div>
 
 															<!-- driver -->
 															<div class="form-group">
 																<label for=driver>Driver</label> <input type="text"
 																	th:field="*{driver}" class="form-control" id="driver"
-																	placeholder="Driver" /> <span class="text-danger"
+																	placeholder="Driver" readonly="" /> <span class="text-danger"
 																	th:errors="*{driver}"></span>
 															</div>
+															
+															
 
 														</div>
 
@@ -141,10 +151,19 @@
 															<!-- password -->
 															<div class="form-group">
 																<label for=password>Password</label> <input
-																	type="password" th:field="*{password}"
+																	type="text" th:field="*{password}"
 																	class="form-control" id="password"
 																	placeholder="Password" /> <span class="text-danger"
 																	th:errors="*{password}"></span>
+															</div>
+															
+															
+															<!-- url -->
+															<div class="form-group">
+																<label for="url">Url JDBC</label> <input type="text"
+																	th:field="*{url}" class="form-control" id="url"
+																	placeholder="URL" readonly="" /> <span class="text-danger"
+																	th:errors="*{url}"></span>
 															</div>
 
 														</div>

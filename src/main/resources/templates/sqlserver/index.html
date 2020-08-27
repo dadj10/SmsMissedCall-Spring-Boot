@@ -65,8 +65,10 @@
 												<th>Port</th>
 												<th>Base de donn&eacute;es</th>
 												<th>Username</th>
+												<th>Instance</th>
 												<th>Password</th>
 												<th>Driver</th>
+												<th>Url JDBC</th>
 												<th>Delai tickets</th>
 												<th>Date modification</th>
 												<th>Actions</th>
@@ -79,11 +81,13 @@
 												<td th:text="${e.port}"></td>
 												<td th:text="${e.dbname}"></td>
 												<td th:text="${e.username}"></td>
+												<td th:text="${e.instance}"></td>
 												<td th:text="${e.password}"></td>
 												<td th:text="${e.driver}"></td>
+												<td class="text-nowrap" th:text="${e.url}"></td>
 												<td th:text="${e.delai}"></td>
-												<td th:text="${e.dateModification}"></td>
-												<td><a th:href="@{/sql-server/formupdate(id=${e.id})}"
+												<td class="text-nowrap" th:text="${e.dateModification}"></td>
+												<td class="text-nowrap"><a th:href="@{/sql-server/formupdate(id=${e.id})}"
 													class="btn btn-primary btn-sm"> <i class="fa fa-edit">
 													</i> Modifier
 												</a></td>

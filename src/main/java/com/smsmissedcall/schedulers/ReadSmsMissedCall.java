@@ -66,10 +66,7 @@ public class ReadSmsMissedCall {
 	@Scheduled(fixedDelay = 10000)
 	public void ReadSqlServerJDBC() {
 
-		System.err.println(Utils.dateNow() + " Run ReadSqlServerJDBC");
-
-		// 1. J'initialise les params de connexion au SGBD
-		String host, instance, dbname, url, driver, username, password = null;
+		System.err.println(Utils.dateNow() + " Run ReadSqlServerJDBC...");
 
 		// 2. Je récupère les parametres du SGBD
 		ParamsSqlServer params = null;
@@ -77,16 +74,13 @@ public class ReadSmsMissedCall {
 
 		if (params != null) {
 
-			host = params.getHost();
-			instance = params.getInstance();
+			String host = params.getHost();
+			String instance = params.getInstance();
 			int port = params.getPort();
-			dbname = params.getDbname();
-
-			url = params.getUrl();
+			String dbname = params.getDbname();
+			String url = params.getUrl();
 
 			// 3. Je formate l'URL de la connexion JDBC
-			// String url =
-			// "jdbc:sqlserver://10.10.130.67\\MSSQLSERVER:1433;databaseName=smsmissedcall";
 			// String url =
 			// "jdbc:sqlserver://[HOST]\\[INSTANCE]:[PORT];databaseName=[DBNAME]";
 			url = url.replace("[HOST]", host);
@@ -95,10 +89,10 @@ public class ReadSmsMissedCall {
 			url = url.replace("[DBNAME]", dbname);
 
 			// driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-			driver = params.getDriver();
+			String driver = params.getDriver();
 
-			username = params.getUsername();
-			password = params.getPassword();
+			String username = params.getUsername();
+			String password = params.getPassword();
 			int delai = Integer.parseInt(params.getDelai());
 
 			try {
@@ -114,33 +108,33 @@ public class ReadSmsMissedCall {
 
 				// 7. Je prépara la requète et puis je l'exécute
 				String selectQuery = "SELECT dbo.CONTACTS.nom AS nom, dbo.CONTACTS.CODE_ENTREPRISE AS code_entreprise, dbo.CONTACTS.linedirect AS ligne_direct, dbo.CallMissed.codes AS code_ticket, dbo.CallMissed.Dateheuredecroche AS date_heure_decroche, dbo.CallMissed.dest1 AS destinataire, dbo.CallMissed.duree AS duree, dbo.CallMissed.traite AS traite, dbo.CallMissed.profil AS profil, dbo.CallMissed.dateheuralerte AS date_heure_alerte, dbo.CONTACTS.poste AS poste, dbo.CONTACTS.standart AS standard FROM dbo.CONTACTS INNER JOIN dbo.CallMissed ON (dbo.CONTACTS.poste = dbo.CallMissed.Postes) WHERE dbo.CallMissed.traite = 0";
-
 				resultSet = statement.executeQuery(selectQuery);
 
 				// 8. J'initialise les variables de récupération
-				String nom, code_entreprise, ligne_direct, code_ticket, date_heure_decroche, destinataire, duree,
-						profil, date_heure_alerte, poste, standard;
+				// String nom, code_entreprise, ligne_direct, code_ticket, date_heure_decroche,
+				// destinataire, duree,
+				// profil, date_heure_alerte, poste, standard;
 
 				if (!resultSet.next()) { // if resultSet.next() retourne false
 					System.err.println(Utils.dateNow() + " Aucun enregistrement trouvé");
 				} else {
 					do {
 						// 9. Je parcours le résultat de l'exécution.
-						nom = resultSet.getString("nom");
-						code_entreprise = resultSet.getString("code_entreprise");
-						ligne_direct = resultSet.getString("ligne_direct");
-						code_ticket = resultSet.getString("code_ticket");
+						String nom = resultSet.getString("nom");
+						String code_entreprise = resultSet.getString("code_entreprise");
+						String ligne_direct = resultSet.getString("ligne_direct");
+						String code_ticket = resultSet.getString("code_ticket");
 
-						date_heure_decroche = resultSet.getString("date_heure_decroche");
-						destinataire = FormatNumero.number_F(resultSet.getString("destinataire"));
-						duree = resultSet.getString("duree");
+						String date_heure_decroche = resultSet.getString("date_heure_decroche");
+						String destinataire = FormatNumero.number_F(resultSet.getString("destinataire"));
+						String duree = resultSet.getString("duree");
 						// int traite = resultSet.getByte("traite");
 
-						profil = resultSet.getString("profil");
-						date_heure_alerte = resultSet.getString("date_heure_alerte");
+						String profil = resultSet.getString("profil");
+						String date_heure_alerte = resultSet.getString("date_heure_alerte");
 
-						poste = resultSet.getString("poste");
-						standard = resultSet.getString("standard");
+						String poste = resultSet.getString("poste");
+						String standard = resultSet.getString("standard");
 
 						/*
 						 * System.out.println("nom: " + nom); System.out.println("code_entreprise: " +
@@ -198,7 +192,7 @@ public class ReadSmsMissedCall {
 									updatedTicket(con, statusTraite, code_ticket);
 								}
 							} else {
-								// Je met a jour le ticket
+								// Je mets a jour le CallMissed existant de Sql Server ne depassant pas de delai
 								int statusTraite = -1;
 								updatedTicket(con, statusTraite, code_ticket);
 							}
@@ -324,52 +318,26 @@ public class ReadSmsMissedCall {
 	 * @return void
 	 */
 	@Scheduled(fixedDelay = 10000)
-	public void sendBulkSms() {
+	public void SendBulkSms() {
 
-		System.err.println(Utils.dateNow() + " Run sendBulkSms");
-
-		// http://10.10.130.76:8080/api/addOneSms?Username=justine&Token=$2a$10$bbqS7kicnAPCFkjbCSPN1OGOhMxavdsMOnRPir7Q39vQeu4msF5y6&Dest=22584046064&Sms=ok&Flash=0&Sender=CIE&Titre=TESTER;
+		System.err.println(Utils.dateNow() + " Run sendBulkSms...");
 
 		// 1. Je recherche les paramètres de l'api.
 		ParamApi api = null;
 		api = paramApiRepos.findOneParamApi();
-		System.err.println(api);
 
 		if (api != null) {
 
-			String username, token, sender, flash, title = null;
-
-			// String username = "justine";
-			// String token =
-			// "$2a$10$bbqS7kicnAPCFkjbCSPN1OGOhMxavdsMOnRPir7Q39vQeu4msF5y6";
-			// String sender = "CIE";
-			// String flash = "0";
-			// String title = TESTER;
-
 			// 2. Je récupère les paramètres de l'api.
-			username = api.getUsername();
-			token = api.getToken();
-			sender = api.getSender();
-			flash = api.getFlash();
-			title = api.getTitle();
-
-			// String url = "http://10.10.130.76:8080/api";
+			String username = api.getUsername();
+			String token = api.getToken();
+			String sender = api.getSender();
+			String flash = api.getFlash();
+			String title = api.getTitle();
 			String url = api.getUrl();
-
-			// 3. Je crée une instance de Gson().
-			Gson gson = new Gson();
 
 			// 4. Je crée une instance de BulkSms().
 			BulkSms bulkSms = new BulkSms();
-
-			// 4. Je crée une instance de RestTemplate().
-			RestTemplate restTemplate = new RestTemplate();
-
-			// 6. Je crée une instance de HttpHeaders().
-			HttpHeaders headers = new HttpHeaders();
-
-			// 7. Je définis le header (en-tête) pour retouner du JSON.
-			headers.setContentType(MediaType.APPLICATION_JSON);
 
 			// 8. J'attribut le username et le token de l'objet BulkSms().
 			bulkSms.setUsername(username);
@@ -398,21 +366,16 @@ public class ReadSmsMissedCall {
 					// 14. Je crée une instance de Message().
 					Message message = new Message();
 
-					// 15. J'initialise les variables du message.
-					String sms = null;
-					String dest = null;
-
-					// 16. Je recheche le modèle de SMS approprié au type de ticket.
-					sms = fondModeleSms(call, modeleSms);
-					dest = call.getDestinataire();
+					// 15. Je recheche le modèle de SMS approprié au type de ticket.
+					String sms = fondModeleSms(call, modeleSms);
+					String dest = call.getDestinataire();
 
 					// Si le numéro eexiste alors...
 					if (dest != null) {
 
-						// 17. Je charge les attribut de l'objet message.
+						// 16. Je charge les attribut de l'objet message.
 						message.setDest(dest);
 						message.setSms(sms);
-
 						message.setFlash(flash);
 						message.setSender(sender);
 
@@ -421,27 +384,39 @@ public class ReadSmsMissedCall {
 				}
 
 				System.err.println(Utils.dateNow() + " messageString " + messageString.size());
-				if (messageString.size() != 0) {
+				// 16. Je verifie que le corps de SMS n'est pas vide alors.
+				if (messageString != null) {
 
-					// 18. Je charge Mssg de l'objet BulkSms.
+					// 17. Je charge Mssg de l'objet BulkSms.
 					bulkSms.setMssg(messageString);
 
-					// 19. J'encode l'objet BulkSms en JSON.
+					// 18. Je crée une instance de Gson().
+					Gson gson = new Gson();
+
+					// 19. Je crée une instance de HttpHeaders().
+					HttpHeaders headers = new HttpHeaders();
+
+					// 20. Je définis le header (en-tête) pour retouner du JSON.
+					headers.setContentType(MediaType.APPLICATION_JSON);
+
+					// 21. Je crée une instance de RestTemplate().
+					RestTemplate restTemplate = new RestTemplate();
+
+					// 22. J'encode l'objet BulkSms en JSON.
 					HttpEntity<String> entity = new HttpEntity<String>(gson.toJson(bulkSms), headers);
 
-					// 20. J'envoi le sms au destinataire finaux.
+					// 23. J'envoi le sms au destinataire finaux.
 					ResponseEntity<String> response = restTemplate.postForEntity(url + "/addBulkSms", entity,
 							String.class);
 					System.err.println(Utils.dateNow() + " CodeReponse : " + response.getStatusCodeValue());
 
-					// 21. Je vérifie le code de la réponse retrournée.
+					// 24. Je vérifie le code de la réponse retrournée.
 					if (response.getStatusCodeValue() == 200) {
-						// Je mets a jour les tickets nofifiés
+						// 25. Je mets a jour les mail (Etat = 1) notifiés
 						updateBulkSms(callMissed);
-						System.err.println(Utils.dateNow() + " Success SMS envoyé avec succès.");
 					} else {
 						System.err.println(
-								Utils.dateNow() + " Erreur lors de l'envoi du SMS, veuillez réessayer à nouveau.");
+								Utils.dateNow() + " Erreur lors de l'envoi des SMS, veuillez réessayer à nouveau.");
 					}
 				}
 			} else {
