@@ -357,7 +357,7 @@ public class ReadSmsMissedCall {
 
 			// 12. Je verifie que les tickets (CallMissed) et modele de SMS ne sont pas
 			// null.
-			System.err.println("callMissed.size(): " + callMissed.size());
+			System.err.println(Utils.dateNow() + " callMissed.size(): " + callMissed.size());
 			if (callMissed.size() != 0 && modeleSms != null) {
 
 				// 13. Je parcours la lite de tickets.
