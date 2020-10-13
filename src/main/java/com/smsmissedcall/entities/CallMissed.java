@@ -23,6 +23,7 @@ public class CallMissed {
 	private String nom;
 
 	private String code_entreprise;
+	private String sender;
 	private String ligne_direct;
 
 	private String code_ticket;
@@ -54,13 +55,14 @@ public class CallMissed {
 	}
 
 	// constructeur avec params
-	public CallMissed(String nom, String code_entreprise, String ligne_direct, String code_ticket,
+	public CallMissed(String nom, String code_entreprise, String sender, String ligne_direct, String code_ticket,
 			String date_heure_decroche, String destinataire, String duree, int traite, String profil,
 			String date_heure_alerte, String poste, String standard, int etat, Date dateInsertion,
 			Date dateModification) {
 		super();
 		this.nom = nom;
 		this.code_entreprise = code_entreprise;
+		this.sender = sender;
 		this.ligne_direct = ligne_direct;
 		this.code_ticket = code_ticket;
 		this.date_heure_decroche = date_heure_decroche;
@@ -99,6 +101,14 @@ public class CallMissed {
 
 	public void setCode_entreprise(String code_entreprise) {
 		this.code_entreprise = code_entreprise;
+	}
+
+	public String getSender() {
+		return sender;
+	}
+
+	public void setSender(String sender) {
+		this.sender = sender;
 	}
 
 	public String getLigne_direct() {

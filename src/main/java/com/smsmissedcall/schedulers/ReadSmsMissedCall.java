@@ -107,13 +107,8 @@ public class ReadSmsMissedCall {
 				statement = con.createStatement();
 
 				// 7. Je prépara la requète et puis je l'exécute
-				String selectQuery = "SELECT dbo.CONTACTS.nom AS nom, dbo.CONTACTS.CODE_ENTREPRISE AS code_entreprise, dbo.CONTACTS.linedirect AS ligne_direct, dbo.CallMissed.codes AS code_ticket, dbo.CallMissed.Dateheuredecroche AS date_heure_decroche, dbo.CallMissed.dest1 AS destinataire, dbo.CallMissed.duree AS duree, dbo.CallMissed.traite AS traite, dbo.CallMissed.profil AS profil, dbo.CallMissed.dateheuralerte AS date_heure_alerte, dbo.CONTACTS.poste AS poste, dbo.CONTACTS.standart AS standard FROM dbo.CONTACTS INNER JOIN dbo.CallMissed ON (dbo.CONTACTS.poste = dbo.CallMissed.Postes) WHERE dbo.CallMissed.traite = 0";
+				String selectQuery = "SELECT dbo.CONTACTS.nom AS nom, dbo.CONTACTS.CODE_ENTREPRISE AS code_entreprise, dbo.CONTACTS.sender AS sender, dbo.CONTACTS.linedirect AS ligne_direct, dbo.CallMissed.codes AS code_ticket, dbo.CallMissed.Dateheuredecroche AS date_heure_decroche, dbo.CallMissed.dest1 AS destinataire, dbo.CallMissed.duree AS duree, dbo.CallMissed.traite AS traite, dbo.CallMissed.profil AS profil, dbo.CallMissed.dateheuralerte AS date_heure_alerte, dbo.CONTACTS.poste AS poste, dbo.CONTACTS.standart AS standard FROM dbo.CONTACTS INNER JOIN dbo.CallMissed ON (dbo.CONTACTS.poste = dbo.CallMissed.Postes) WHERE dbo.CallMissed.traite = 0";
 				resultSet = statement.executeQuery(selectQuery);
-
-				// 8. J'initialise les variables de récupération
-				// String nom, code_entreprise, ligne_direct, code_ticket, date_heure_decroche,
-				// destinataire, duree,
-				// profil, date_heure_alerte, poste, standard;
 
 				if (!resultSet.next()) { // if resultSet.next() retourne false
 					System.err.println(Utils.dateNow() + " Aucun enregistrement trouvé");
@@ -122,6 +117,9 @@ public class ReadSmsMissedCall {
 						// 9. Je parcours le résultat de l'exécution.
 						String nom = resultSet.getString("nom");
 						String code_entreprise = resultSet.getString("code_entreprise");
+						
+						String sender = resultSet.getString("sender");
+						
 						String ligne_direct = resultSet.getString("ligne_direct");
 						String code_ticket = resultSet.getString("code_ticket");
 
@@ -165,6 +163,7 @@ public class ReadSmsMissedCall {
 
 								call.setNom(nom);
 								call.setCode_entreprise(code_entreprise);
+								call.setSender(sender);
 								call.setLigne_direct(ligne_direct);
 								call.setCode_ticket(code_ticket);
 								call.setDate_heure_decroche(date_heure_decroche);
