@@ -13,31 +13,31 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.smsmissedcall.entities.ParamsSqlServer;
-import com.smsmissedcall.repository.ParamsSqlServerRepository;
+import com.smsmissedcall.entities.ParametreSqlServer;
+import com.smsmissedcall.repository.ParametreSqlServerRepository;
 
 @Controller
 @CrossOrigin("*")
 @RequestMapping(value = "sql-server")
-public class ParamsSqlServerController {
+public class ParametreSqlServerController {
 
 	@Autowired
-	private ParamsSqlServerRepository paramsSqlServerRepos;
+	private ParametreSqlServerRepository serverRepository;
 
 	@GetMapping()
 	public String page(Model model, HttpSession session) {
 		// je recherche les tickets par ordre decroissant
-		model.addAttribute("SqlServer", paramsSqlServerRepos.findParamSqlServer());
+		model.addAttribute("SqlServer", serverRepository.findParamSqlServer());
 		return "sqlserver/index";
 	}
 
 	/*
 	 * Fonction qui affiche par id
 	 */
-	public ParamsSqlServer findOne(Long id) {
-		ParamsSqlServer sqlserver = null;
+	public ParametreSqlServer findOne(Long id) {
+		ParametreSqlServer sqlserver = null;
 		try {
-			sqlserver = paramsSqlServerRepos.findSqlServerById(id);
+			sqlserver = serverRepository.findSqlServerById(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -62,8 +62,8 @@ public class ParamsSqlServerController {
 	 * Fonction qui modification
 	 */
 	@PostMapping(value = "/update")
-	public String update(ParamsSqlServer a, BindingResult bindingResult) {
-		ParamsSqlServer paramsSqlServer = null;
+	public String update(ParametreSqlServer a, BindingResult bindingResult) {
+		ParametreSqlServer paramsSqlServer = null;
 		try {
 			if (bindingResult.hasErrors()) {
 				return "sqlserver/update";
@@ -76,7 +76,7 @@ public class ParamsSqlServerController {
 				}
 
 				a.setDateModification(new Date());
-				a = paramsSqlServerRepos.save(a);
+				a = serverRepository.save(a);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

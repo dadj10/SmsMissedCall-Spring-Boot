@@ -1,10 +1,12 @@
-package com.smsmissedcall.utils;
+package com.smsmissedcall.config;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import com.smsmissedcall.entities.ParametreSqlServer;
 
 public class Utils {
 
@@ -35,12 +37,9 @@ public class Utils {
 	}
 
 	public static String dateNow() {
-
 		String dateNow = null;
-
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-
 		dateNow = sdf.format(date);
 
 		return dateNow;
@@ -100,6 +99,19 @@ public class Utils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static String formatUrl(ParametreSqlServer sqlServer) {
+		String url = sqlServer.getUrl();
+		
+		if (url.contains("[HOST]") && url.contains("[PORT]") && url.contains("[DBNAME]")) {
+			url = url.replace("[HOST]", sqlServer.getHost());
+			url = url.replace("[INSTANCE]", sqlServer.getInstance());
+			url = url.replace("[PORT]", String.valueOf(sqlServer.getPort()));
+			url = url.replace("[DBNAME]", sqlServer.getDbname());
+		}
+
+		return url;
 	}
 
 }

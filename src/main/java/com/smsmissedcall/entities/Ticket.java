@@ -11,8 +11,8 @@ import javax.persistence.Table;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
-@Table(name = "callmissed")
-public class CallMissed {
+@Table(name = "smsMissedCallTicket")
+public class Ticket {
 
 	private static final long serialVersionUID = 1L;
 
@@ -21,49 +21,39 @@ public class CallMissed {
 	private Long id;
 
 	private String nom;
-
-	private String code_entreprise;
-	private String sender;
 	private String ligne_direct;
-
+	private String code_entreprise;
 	private String code_ticket;
 	private String date_heure_decroche;
-
 	private String destinataire;
-
 	private String duree;
 	private int traite;
 	private String profil;
-
 	private String date_heure_alerte;
-
 	private String poste;
-
 	private String standard;
 
 	private int etat = 1;
-
 	@DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
 	private Date dateInsertion;
 	@DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
 	private Date dateModification;
 
-	// constructeur sans params
-	public CallMissed() {
+	private int idGroupeEnvoi;
+
+	public Ticket() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	// constructeur avec params
-	public CallMissed(String nom, String code_entreprise, String sender, String ligne_direct, String code_ticket,
+	public Ticket(String nom, String ligne_direct, String code_entreprise, String code_ticket,
 			String date_heure_decroche, String destinataire, String duree, int traite, String profil,
 			String date_heure_alerte, String poste, String standard, int etat, Date dateInsertion,
 			Date dateModification) {
 		super();
 		this.nom = nom;
-		this.code_entreprise = code_entreprise;
-		this.sender = sender;
 		this.ligne_direct = ligne_direct;
+		this.code_entreprise = code_entreprise;
 		this.code_ticket = code_ticket;
 		this.date_heure_decroche = date_heure_decroche;
 		this.destinataire = destinataire;
@@ -78,7 +68,6 @@ public class CallMissed {
 		this.dateModification = dateModification;
 	}
 
-	// getters a setters
 	public Long getId() {
 		return id;
 	}
@@ -95,28 +84,20 @@ public class CallMissed {
 		this.nom = nom;
 	}
 
-	public String getCode_entreprise() {
-		return code_entreprise;
-	}
-
-	public void setCode_entreprise(String code_entreprise) {
-		this.code_entreprise = code_entreprise;
-	}
-
-	public String getSender() {
-		return sender;
-	}
-
-	public void setSender(String sender) {
-		this.sender = sender;
-	}
-
 	public String getLigne_direct() {
 		return ligne_direct;
 	}
 
 	public void setLigne_direct(String ligne_direct) {
 		this.ligne_direct = ligne_direct;
+	}
+
+	public String getCode_entreprise() {
+		return code_entreprise;
+	}
+
+	public void setCode_entreprise(String code_entreprise) {
+		this.code_entreprise = code_entreprise;
 	}
 
 	public String getCode_ticket() {
@@ -213,6 +194,14 @@ public class CallMissed {
 
 	public void setDateModification(Date dateModification) {
 		this.dateModification = dateModification;
+	}
+
+	public int getIdGroupeEnvoi() {
+		return idGroupeEnvoi;
+	}
+
+	public void setIdGroupeEnvoi(int idGroupeEnvoi) {
+		this.idGroupeEnvoi = idGroupeEnvoi;
 	}
 
 	public static long getSerialversionuid() {

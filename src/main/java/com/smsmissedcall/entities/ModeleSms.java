@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "modelesms")
+@Table(name = "smsMissedCallModeleSms")
 public class ModeleSms {
 
 	private static final long serialVersionUID = 1L;
@@ -18,7 +18,7 @@ public class ModeleSms {
 
 	private String sms_appel_entrant;
 	private String sms_appel_sortant_ld;
-	private String sms_appel_sortant_sld;	
+	private String sms_appel_sortant_sld;
 
 	private String initial;
 

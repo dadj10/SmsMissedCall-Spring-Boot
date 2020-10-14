@@ -1,8 +1,10 @@
-package com.smsmissedcall.utils;
+package com.smsmissedcall.config;
+
+import com.smsmissedcall.entities.ResponseFormatNumber;
 
 public class FormatNumero {
 
-	public static String number_F(String expediteur) {
+	public static ResponseFormatNumber number_F(String expediteur) {
 
 		System.out.println("Est numérique : " + isNumeric(expediteur));
 		// Mes declarations
@@ -13,9 +15,14 @@ public class FormatNumero {
 		// Je recupère la taille du numéro expéditeur
 		taille = expediteur.length();
 
+		// Je creer une instance ResponseFormatNumber()
+		ResponseFormatNumber rfn = new ResponseFormatNumber();
+
 		if (isNumeric(expediteur) == true) {
 			// Si le numéro existe alors
 			if (taille > 0) {
+
+				rfn.setResponse(true);
 
 				// Je recupère le l'indicatif pays +225
 				indicatif = expediteur.substring(0, 4);
@@ -48,12 +55,15 @@ public class FormatNumero {
 				} else if (taille == 8 && !indicatif.equalsIgnoreCase("225")) {
 					numero = "225" + expediteur;
 				} else {
+					rfn.setResponse(false);
 					numero = expediteur;
 				}
 			}
 		}
 
-		return numero;
+		rfn.setNumero(numero);
+
+		return rfn;
 	}
 
 	public static boolean isNumeric(String str) {
@@ -63,29 +73,5 @@ public class FormatNumero {
 		} catch (NumberFormatException e) {
 			return false;
 		}
-	}
-
-	private static boolean ValidatePhoneNumber(String phoneNo) {
-
-		// valider les numéros de téléphone au format "1234567890"
-		if (phoneNo.matches("\\d{12}"))
-			return true;
-
-		// valider le numéro de téléphone avec -,. ou espaces
-		else if (phoneNo.matches("\\d{3}[-\\.\\s]\\d{3}[-\\.\\s]\\d{4}"))
-			return true;
-
-		// validation du numéro de téléphone avec une longueur d'extension de 3 à 5
-		else if (phoneNo.matches("\\d{3}-\\d{3}-\\d{4}\\s(x|(ext))\\d{3,5}"))
-			return true;
-
-		// validating phone number where area code is in braces ()
-		else if (phoneNo.matches("\\(\\d{3}\\)"))
-			return true;
-
-		// return false if nothing matches the input
-		else
-			return false;
-
 	}
 }

@@ -8,19 +8,19 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.smsmissedcall.repository.CallMissedRepository;
+import com.smsmissedcall.repository.TicketRepository;
 
 @Controller
 @RequestMapping(value = "/")
-public class CallmissedController {
+public class TicketController {
 	
 	@Autowired
-	private CallMissedRepository callMissedRepos;
+	private TicketRepository ticketRepos;
 
 	@GetMapping()
 	public String page(Model model, HttpSession session) {
 		// je recherche les tickets par ordre decroissant
-		model.addAttribute("Tickets", callMissedRepos.findAllTicketOrderByDesc());
+		model.addAttribute("Tickets", ticketRepos.findAllTicketOrderByDesc());
 		return "callmissed/index";
 	}
 

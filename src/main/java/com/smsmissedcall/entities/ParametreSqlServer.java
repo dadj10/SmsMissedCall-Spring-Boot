@@ -11,8 +11,8 @@ import javax.persistence.Table;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
-@Table(name = "paramsqlserver")
-public class ParamsSqlServer {
+@Table(name = "smsMissedCallParametreSqlServer")
+public class ParametreSqlServer {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,18 +33,18 @@ public class ParamsSqlServer {
 	private String delai;
 
 	private int etat = 1;
-	
+
 	@DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
 	private Date dateModification;
 
 	// constructeur sans params
 	// constructeur avec params
-	public ParamsSqlServer() {
+	public ParametreSqlServer() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public ParamsSqlServer(String dbname, String host, int port, String driver, String instance, String username,
+	public ParametreSqlServer(String dbname, String host, int port, String driver, String instance, String username,
 			String password, String url, String delai, int etat, Date dateInsertion, Date dateModification) {
 		super();
 		this.dbname = dbname;
