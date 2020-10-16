@@ -65,11 +65,11 @@ public class ReadSmsMissedCallScheduler {
 	@Scheduled(fixedDelay = 10000)
 	public void ReadSqlServerJDBC() {
 
-		// Je déclare les variables locals.
-		List<Object[]> groupeEnvoi = null;
-
 		// Je ferme les connexions.
 		close();
+
+		// Je déclare les variables locals.
+		List<Object[]> groupeEnvoi = null;
 
 		System.out.println(Utils.dateNow() + " Run ReadSqlServerJDBC...");
 
@@ -135,6 +135,8 @@ public class ReadSmsMissedCallScheduler {
 							 * affecté a un groupe d'envoi (Actif) ayant un utilisateur (Actif) de role
 							 * SmsMissedCall (si le sender est affilié a un groupe d'envoi ayant un
 							 * utilisateur de role SmsMissedCall dans la base de données).
+							 * ------------OBJECTIF VISE : Mapper l'identifiant du groupe d'envoi ayant un
+							 * utilisateur de role SmsMissedCall au ticket.
 							 */
 							groupeEnvoi = ticketRepos.findIdGroupeEnvoieSmsMissedCallBySender(sender);
 
@@ -184,9 +186,9 @@ public class ReadSmsMissedCallScheduler {
 										t.setCode_entreprise(code_entreprise);
 
 										// Je recupère l'identifiant du groupe d'envoi en position 0 de objects
-										int idGroupeEnvoi = 0;
+										Long idGroupeEnvoi = null;
 										for (Object[] objects : groupeEnvoi) {
-											idGroupeEnvoi = Integer.parseInt(objects[0].toString());
+											idGroupeEnvoi = Long.parseLong(objects[0].toString());
 											System.out.println(objects[0]);
 										}
 										t.setIdGroupeEnvoi(idGroupeEnvoi); // Groupe d'envoi du ticket.
@@ -238,7 +240,7 @@ public class ReadSmsMissedCallScheduler {
 					} while (resultSet.next());
 				}
 
-				// Je ferme les connexions
+				// Je ferme les connexions.
 				close();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -257,6 +259,7 @@ public class ReadSmsMissedCallScheduler {
 		ParametreApi api = null;
 		List<Ticket> tickets = null;
 		ModeleSms modeleSms = null;
+		Long idGroupeEnvoi = null;
 
 		/*
 		 * Je recupère la liste des appilications ayant le role exeptionnel
@@ -291,9 +294,9 @@ public class ReadSmsMissedCallScheduler {
 					sender = application[2].toString();
 					title = application[3].toString();
 
-					Long idGroupeEnvoi = Long.parseLong(application[4].toString());
+					idGroupeEnvoi = Long.parseLong(application[4].toString());
 
-					// Je recupère les ticket du jour appartenant au groupe d'envois de
+					// Je recupère les tickets du jour appartenant au groupe d'envois de
 					// l'application.
 					tickets = ticketRepos.findAllTicketOfTodayByIdGroupEnvoi(idGroupeEnvoi);
 
@@ -365,23 +368,24 @@ public class ReadSmsMissedCallScheduler {
 	}
 
 	/*
-	 * Cette fonction permet determiner l'ecart entre deux appels (meme poste, meme
-	 * destinataire).
+	 * Cette fonction permet determiner si l'ecart en minute entre deux appels
+	 * manqué émit pas un meme poste vers un meme destinataire est respecté (meme
+	 * poste, meme destinataire).
 	 */
 	public boolean findEcartDernierTicket(String poste, String destinataire, String date_heure_alerte, int delai) {
 
 		boolean reponse = false;
 
 		// Je recherche le dernier ticket enregistré le poste et le destinataire.
-		Ticket call = null;
-		call = ticketRepos.findLastCall(poste, destinataire);
+		Ticket ticket = null;
+		ticket = ticketRepos.findLastCall(poste, destinataire);
 
 		// S'il existe un ticket du meme poste et du meme destinataire alors...
-		if (call != null) {
+		if (ticket != null) {
 
-			// Je compare les dates d'alerte
-			Date date1 = Utils.stringToDate(call.getDate_heure_alerte()); // date de l'ancien ticket
-			Date date2 = Utils.stringToDate(date_heure_alerte); // date du nouveau ticket
+			// Je compare les dates d'alerte.
+			Date date1 = Utils.stringToDate(ticket.getDate_heure_alerte()); // date de l'ancien ticket.
+			Date date2 = Utils.stringToDate(date_heure_alerte); // date du nouveau ticket.
 
 			// Je calcule le nombre de minutes entre des deux dates.
 			Long diff = date2.getTime() - date1.getTime();
@@ -411,14 +415,14 @@ public class ReadSmsMissedCallScheduler {
 		boolean reponse = false;
 
 		try {
-			// Je prépare la requète de mise a jour
+			// Je prépare la requète de mise à jour.
 			String updateQuery = "UPDATE CallMissed SET traite=? WHERE codes=?";
 
 			preparedStatement = connection.prepareStatement(updateQuery);
 			preparedStatement.setInt(1, statusTraite);
 			preparedStatement.setString(2, code_ticket);
 
-			// J'exécute la requète de mise a jour.
+			// J'exécute la requète de mise à jour.
 			int rowsUpdated = preparedStatement.executeUpdate();
 			if (rowsUpdated > 0) {
 				reponse = true;
@@ -468,21 +472,19 @@ public class ReadSmsMissedCallScheduler {
 			modele = modele.replace("[ENTREPRISE]", ticket.getCode_entreprise());
 
 			// Je verifie que le la ligne direct n'est pas null.
-			if (ticket.getLigne_direct() != "") {
+			if (ticket.getLigne_direct() != null) {
 				sms = modele.replace("[LIGNEDIRECTE]", ticket.getLigne_direct());
 			} else {
 				sms = modele.replace("[LIGNEDIRECTE]", ticket.getStandard());
 			}
-		} else if (profil == "incoming") {
-
 		}
 
 		return sms;
 	}
 
 	/*
-	 * La fonction updateBulkSms() Cette fonction permet de mettre à jour les
-	 * tickets traités.
+	 * La fonction updateBulkSms() permet de mettre à jour (etat à 1) les tickets
+	 * dont le sms a été envoyé.
 	 */
 	public void updateBulkSms(List<Ticket> tickets) {
 

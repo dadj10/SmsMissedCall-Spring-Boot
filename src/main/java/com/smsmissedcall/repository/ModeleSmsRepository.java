@@ -7,7 +7,7 @@ import com.smsmissedcall.entities.ModeleSms;
 
 public interface ModeleSmsRepository extends JpaRepository<ModeleSms, Long> {
 
-	// Cette requête retourne un CallMissed par son codes
+	/* Cette requete permet de retourner la liste des modeles de sms */
 	@Query("SELECT c FROM ModeleSms c")
 	ModeleSms findModelSms();
 

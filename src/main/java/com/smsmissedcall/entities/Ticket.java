@@ -39,7 +39,7 @@ public class Ticket {
 	@DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
 	private Date dateModification;
 
-	private int idGroupeEnvoi;
+	private Long idGroupeEnvoi;
 
 	public Ticket() {
 		super();
@@ -196,11 +196,11 @@ public class Ticket {
 		this.dateModification = dateModification;
 	}
 
-	public int getIdGroupeEnvoi() {
+	public Long getIdGroupeEnvoi() {
 		return idGroupeEnvoi;
 	}
 
-	public void setIdGroupeEnvoi(int idGroupeEnvoi) {
+	public void setIdGroupeEnvoi(Long idGroupeEnvoi) {
 		this.idGroupeEnvoi = idGroupeEnvoi;
 	}
 

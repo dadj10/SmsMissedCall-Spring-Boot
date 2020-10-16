@@ -7,7 +7,7 @@ import com.smsmissedcall.entities.ParametreApi;
 
 public interface ParametreApiRepository extends JpaRepository<ParametreApi, Long> {
 
-	// Cette requête retourne un ParamApi
+	/* Cette requête retourne un ParametreApi */
 	@Query("SELECT c FROM ParametreApi c WHERE c.Etat=1")
 	ParametreApi findOneParametreApi();
 

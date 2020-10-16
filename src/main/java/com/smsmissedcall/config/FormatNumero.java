@@ -17,6 +17,7 @@ public class FormatNumero {
 
 		// Je creer une instance ResponseFormatNumber()
 		ResponseFormatNumber rfn = new ResponseFormatNumber();
+		rfn.setResponse(false);
 
 		if (isNumeric(expediteur) == true) {
 			// Si le numéro existe alors
